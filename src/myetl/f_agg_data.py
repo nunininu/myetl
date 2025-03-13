@@ -2,7 +2,6 @@ from datetime import datetime
 import pandas as pd
 import pendulum
 
-execution_date = pendulum.datetime(2025, 3, 12, tz="Asia/Seoul")
 
 def generate_data_path(execution_date):
     date_str = execution_date.strftime("%Y/%m/%d/%H")
@@ -14,7 +13,8 @@ def f_agg_data(execution_date):
     data = pd.read_parquet(f"{data_path}/data.csv", engine='pyarrow') # data.parquet 읽기
     df = pd.DataFrame(data)  # DataFrame 생성
     group_df = df.groupby(["value"]).count().reset_index() # groupby value
-    group_df.to_csv(f"{data_path}/agg.csv")  # agg.csv 로 저장
+    agg_data = group_df.to_csv(f"{data_path}/agg.csv")  # agg.csv 로 저장
+    return f"{agg_data}파일이 생성되었습니다"
 
 
 # def f_agg_data():

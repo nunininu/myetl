@@ -16,17 +16,14 @@ with DAG(
     end = EmptyOperator(task_id="end")
 
     # data.csv 생성 경로 하드코딩 수정 (gpt)
-    def generate_data_path(execution_date):
-        date_str = execution_date.strftime("%Y/%m/%d/%H")
-        return f"/home/sgcho/data/{date_str}"
+    # def generate_data_path(execution_date):
+    #     date_str = execution_date.strftime("%Y/%m/%d/%H")
+    #     return f"/home/sgcho/data/{date_str}"
     
     # data.csv 생성 명령어 수정 (gpt)
     make_data = BashOperator(
         task_id="make_data", 
-        bash_command="""
-        bash /home/sgcho/airflow/make_data.sh {{ params.data_path }}
-        """,
-        params={"data_path": "{{ execution_date.strftime('%Y/%m/%d/%H') }}"}
+        bash_command="/home/sgcho/airflow/make_data.sh /home/sgcho/data/{{execution_date.in_tz('Asia/Seoul').strftime('%Y/%m/%d/%H')}}"
     )
     
     # 수정 전 구 코드
@@ -39,24 +36,26 @@ with DAG(
     
     # def f_agg_data(): def f_load_data(): 는 별도의 파일로 분리하였음
     
-    def ff_load_data(execution_date):
+    def ff_load_data(path):
         from myetl.f_load_data import f_load_data
-        return f_load_data(execution_date)
+        return f_load_data(path)
         
     
-    def ff_agg_data(execution_date):
+    def ff_agg_data(path):
         from myetl.f_agg_data import f_agg_data
-        return f_agg_data(execution_date)
+        return f_agg_data(path)
     
             
     load_data = PythonVirtualenvOperator(
-            task_id="load_data", python_callable=ff_load_data, 
-            requirements=["git+https://github.com/nunininu/myetl.git@0.1.3"]    
+        task_id="load_data", python_callable=ff_load_data, 
+        requirements=["git+https://github.com/nunininu/myetl.git@0.1.3"],
+        op_args=["{{data_interval_start.in_tz('Asia/Seoul').format('YYYY/MM/DD/HH')}}"] 
         )
     
     agg_data = PythonVirtualenvOperator(
-            task_id="agg_data", python_callable=ff_agg_data, 
-            requirements=["git+https://github.com/nunininu/myetl.git@0.1.3"]            
+        task_id="agg_data", python_callable=ff_agg_data, 
+        requirements=["git+https://github.com/nunininu/myetl.git@0.1.3"],
+        op_args=["{{data_interval_start.in_tz('Asia/Seoul').format('YYYY/MM/DD/HH')}}"]          
         )
     
 start >> make_data >> load_data >> agg_data >> end
