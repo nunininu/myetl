@@ -41,12 +41,12 @@ with DAG(
             
     load_data = PythonVirtualenvOperator(
             task_id="load_data", python_callable=f_load_data, 
-                
+            requirements=["git+https://github.com/nunininu/myetl.git@0.1.2"]    
         )
     
     agg_data = PythonVirtualenvOperator(
             task_id="agg_data", python_callable=f_agg_data, 
-                        
+            requirements=["git+https://github.com/nunininu/myetl.git@0.1.2"]            
         )
     
 start >> make_data >> load_data >> agg_data >> end
