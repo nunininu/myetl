@@ -48,14 +48,14 @@ with DAG(
             
     load_data = PythonVirtualenvOperator(
         task_id="load_data", python_callable=ff_load_data, 
-        requirements=["git+https://github.com/nunininu/myetl.git@0.1.3"],
+        requirements=["git+https://github.com/nunininu/myetl.git@0.1.4"],
         op_args=["{{data_interval_start.in_tz('Asia/Seoul').format('YYYY/MM/DD/HH')}}"] 
         )
     
     agg_data = PythonVirtualenvOperator(
         task_id="agg_data", python_callable=ff_agg_data, 
-        requirements=["git+https://github.com/nunininu/myetl.git@0.1.3"],
-        op_args=["{{data_interval_start.in_tz('Asia/Seoul').format('YYYY/MM/DD/HH')}}"]          
+        requirements=["git+https://github.com/nunininu/myetl.git@0.1.4"],
+        op_args=["{{data_interval_start.in_tz('Asia/Seoul').format('YYYY/MM/DD/HH')}}"]   
         )
     
 start >> make_data >> load_data >> agg_data >> end
