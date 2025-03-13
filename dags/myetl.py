@@ -38,15 +38,25 @@ with DAG(
     #     )
     
     # def f_agg_data(): def f_load_data(): 는 별도의 파일로 분리하였음
+    
+    def ff_load_data(execution_date):
+        from myetl.f_load_data import f_load_data
+        return f_load_data(execution_date)
+        
+    
+    def ff_agg_data(execution_date):
+        from myetl.f_agg_data import f_agg_data
+        return f_agg_data(execution_date)
+    
             
     load_data = PythonVirtualenvOperator(
-            task_id="load_data", python_callable=f_load_data, 
-            requirements=["git+https://github.com/nunininu/myetl.git@0.1.2"]    
+            task_id="load_data", python_callable=ff_load_data, 
+            requirements=["git+https://github.com/nunininu/myetl.git@0.1.3"]    
         )
     
     agg_data = PythonVirtualenvOperator(
-            task_id="agg_data", python_callable=f_agg_data, 
-            requirements=["git+https://github.com/nunininu/myetl.git@0.1.2"]            
+            task_id="agg_data", python_callable=ff_agg_data, 
+            requirements=["git+https://github.com/nunininu/myetl.git@0.1.3"]            
         )
     
 start >> make_data >> load_data >> agg_data >> end

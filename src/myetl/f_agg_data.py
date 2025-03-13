@@ -9,7 +9,7 @@ def generate_data_path(execution_date):
     return f"/home/sgcho/data/{date_str}"
 
 
-def f_agg_data():
+def f_agg_data(execution_date):
     data_path = generate_data_path(execution_date)
     data = pd.read_parquet(f"{data_path}/data.csv", engine='pyarrow') # data.parquet 읽기
     df = pd.DataFrame(data)  # DataFrame 생성
