@@ -6,10 +6,11 @@ def generate_data_path(execution_date):
 
 
 def f_agg_data():
-    data = pd.read_parquet(f"{generate_data_path()}/data.csv", engine='pyarrow') # data.parquet 읽기
+    data_path = generate_data_path(execution_date)
+    data = pd.read_parquet(f"{data_path}/data.csv", engine='pyarrow') # data.parquet 읽기
     df = pd.DataFrame(data)  # DataFrame 생성
     group_df = df.groupby(["value"]).count().reset_index() # DataFrame을 Parquet 파일로 저장
-    group_df.to_csv(f"{generate_data_path()}/agg.csv)")
+    group_df.to_csv(f"{data_path}/agg.csv)")
 
 
 # def f_agg_data():
