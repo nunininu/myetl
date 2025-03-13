@@ -1,6 +1,6 @@
 [project]
 name = "myetl"
-version = "0.1.5"
+version = "0.1.6"
 description = "Default template for PDM package"
 authors = [
     {name = "nunininu", email = "sgcho0907@gmail.com"},
