@@ -2,8 +2,6 @@ from datetime import datetime
 import pandas as pd
 import pendulum
 
-execution_date = pendulum.datetime(2025, 3, 12, tz="Asia/Seoul")
-
 def generate_data_path(path):
     return f"/home/sgcho/data/{path}"
 
